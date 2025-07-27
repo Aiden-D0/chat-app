@@ -3,13 +3,16 @@
 <head>
   <title>Chat Room</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-database-compat.js"></script>
 </head>
 <body>
   <div class="menu">
-    <h2>Join or Create Room</h2>
+    <h2>Create or Join a Room</h2>
     <input type="text" id="roomCode" placeholder="Enter Room Code" />
+    <br><br>
+    <button onclick="createRoom()">Create Room</button>
     <button onclick="joinRoom()">Join Room</button>
   </div>
 
@@ -20,8 +23,8 @@
     <button onclick="sendMessage()">Send</button>
   </div>
 
+  <!-- Firebase config and main logic -->
   <script src="firebase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
-
