@@ -1,7 +1,6 @@
 const db = firebase.database();
 let currentRoom = "";
 
-// Generate random 5-character alphanumeric room code
 function generateRoomCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = '';
@@ -14,11 +13,14 @@ function generateRoomCode() {
 function createRoom() {
   const code = generateRoomCode();
 
-  db.ref(`rooms/${code}`).set({ createdAt: Date.now() }).then(() => {
+  db.ref(`rooms/${code}`).set({
+    createdAt: new Date().toISOString()
+  }).then(() => {
     alert(`Room created! Code: ${code}`);
     startChatRoom(code);
-  }).catch((err) => {
-    alert("Error creating room: " + err);
+  }).catch((error) => {
+    alert("Failed to create room: " + error.message);
+    console.error(error);
   });
 }
 
@@ -30,8 +32,10 @@ function joinRoom() {
     if (snapshot.exists()) {
       startChatRoom(code);
     } else {
-      alert("Room does not exist!");
+      alert("Room does not exist.");
     }
+  }).catch((error) => {
+    alert("Error joining room: " + error.message);
   });
 }
 
@@ -42,7 +46,7 @@ function startChatRoom(code) {
   document.getElementById("roomDisplay").textContent = code;
 
   const messagesRef = db.ref(`rooms/${code}/messages`);
-  messagesRef.off(); // remove previous listeners just in case
+  messagesRef.off();
 
   messagesRef.on("child_added", (snapshot) => {
     const msg = snapshot.val();
