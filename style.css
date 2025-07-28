@@ -3,22 +3,79 @@ body {
   background: #f5f5f5;
   padding: 20px;
 }
-
-.menu, .chat {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 400px;
-  margin: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-#messages {
+.chat-box {
   border: 1px solid #ccc;
-  height: 200px;
+  background: white;
+  height: 300px;
   overflow-y: auto;
-  margin: 10px 0;
   padding: 10px;
-  background: #fafafa;
+  margin-bottom: 10px;
+}
+input {
+  padding: 8px;
+  margin: 5px;
 }
 
+/* firebase-config.js */
+const firebaseConfig = {
+  apiKey: "AIzaSyAbgrezF6aYC1LTcVXsY7CFnJU6ex29-P8",
+  authDomain: "webchatapp-4fbaf.firebaseapp.com",
+  databaseURL: "https://webchatapp-4fbaf-default-rtdb.firebaseio.com",
+  projectId: "webchatapp-4fbaf",
+  storageBucket: "webchatapp-4fbaf.appspot.com",
+  messagingSenderId: "924513856351",
+  appId: "1:924513856351:web:a8cf2542dbdde066f624ea",
+  measurementId: "G-YYYRRQ0CYQ"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// script.js
+function generateRoomCode() {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
+function createRoom() {
+  const roomCode = generateRoomCode();
+  db.ref("rooms/" + roomCode).set({ createdAt: Date.now() });
+  document.getElementById("currentRoomCode").textContent = roomCode;
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("chat").style.display = "block";
+  listenForMessages(roomCode);
+}
+
+function joinRoom() {
+  const roomCode = document.getElementById("roomCodeInput").value.trim();
+  if (!roomCode) return alert("Enter a valid room code");
+  db.ref("rooms/" + roomCode).once("value", (snapshot) => {
+    if (snapshot.exists()) {
+      document.getElementById("currentRoomCode").textContent = roomCode;
+      document.getElementById("menu").style.display = "none";
+      document.getElementById("chat").style.display = "block";
+      listenForMessages(roomCode);
+    } else {
+      alert("Room not found");
+    }
+  });
+}
+
+function sendMessage() {
+  const roomCode = document.getElementById("currentRoomCode").textContent;
+  const text = document.getElementById("messageInput").value;
+  if (!text.trim()) return;
+  db.ref("rooms/" + roomCode + "/messages").push({ text });
+  document.getElementById("messageInput").value = "";
+}
+
+function listenForMessages(roomCode) {
+  const messagesRef = db.ref("rooms/" + roomCode + "/messages");
+  messagesRef.on("child_added", (snapshot) => {
+    const msg = snapshot.val();
+    const msgBox = document.getElementById("messages");
+    const div = document.createElement("div");
+    div.textContent = msg.text;
+    msgBox.appendChild(div);
+    msgBox.scrollTop = msgBox.scrollHeight;
+  });
+}
