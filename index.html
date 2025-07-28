@@ -1,35 +1,35 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Web Chat App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realtime Chat App</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Web Chat App</h1>
-  <!-- 1 -->
-  <!-- Create Room -->
-  <button onclick="createRoom()">Create Room</button>
+  <h1>Realtime Chat</h1>
+  <div id="menu">
+    <button onclick="createRoom()">Create Room</button>
+    <input type="text" id="roomCodeInput" placeholder="Room Code" />
+    <button onclick="joinRoom()">Join Room</button>
+  </div>
 
-  <!-- Join Room -->
-  <input type="text" id="roomCode" placeholder="Enter room code" maxlength="6" />
-  <button onclick="joinRoom()">Join Room</button>
-
-  <!-- Chat Container -->
-  <div id="chat" style="display:none;">
+  <div id="chat" style="display: none;">
     <h2>Room: <span id="currentRoomCode"></span></h2>
-    <div id="messages"></div>
-    <input type="text" id="messageInput" placeholder="Type a message..." />
+    <div id="messages" class="chat-box"></div>
+    <input type="text" id="messageInput" placeholder="Type your message..." />
     <button onclick="sendMessage()">Send</button>
   </div>
 
-  <!-- Firebase SDKs (Compat Version for browser use) -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-database-compat.js"></script>
 
-  <!-- Firebase config and main script -->
+  <!-- Firebase Config and App Init -->
   <script src="firebase-config.js"></script>
+
+  <!-- Main Chat Logic -->
   <script src="script.js"></script>
 </body>
 </html>
